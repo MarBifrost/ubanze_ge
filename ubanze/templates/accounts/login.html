@@ -1,0 +1,27 @@
+{% extends "./base.html" %}
+{% load static %}
+{% block login %}
+    <div class="section_gap">
+        <div class="login_form_inner">
+            <h3>ავტორიზაციისთვის შეიყვანეთ თქვენი მონაცემები</h3>
+            <form class="row login_form" method="post" id="contactForm" novalidate="novalidate">
+                {% csrf_token %}
+                {{form.non_field_errors}}
+                <div class="col-md-12 form-group">
+<!--                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">-->
+                    {{ form.username.label_tag }}
+                    {{ form.username }}
+                </div>
+                <div class="col-md-12 form-group">
+<!--                    <input type="text" class="form-control" id="password" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">-->
+                    {{ form.password.label_tag }}
+                    {{ form.password }}
+                </div>
+                <div class="col-md-12 form-group">
+                    <button type="submit" value="submit" class="primary-btn">შესვლა</button>
+                    <a href="#">დაგავიწყდათ პაროლი?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

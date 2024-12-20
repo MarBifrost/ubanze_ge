@@ -21,14 +21,14 @@ class RegisterForm(forms.ModelForm):
         model = CustomUser
         fields = ['username', 'email', 'password', 'is_service_provider']
 
-    def save(self, commit=True):
-        user = super(RegisterForm, self).save(commit=False)
-        user.set_password(self.cleaned_data['password'])
-        if commit:
-            user.save()
-            if user.is_service_provider:
-                ServiceProviderProfile.objects.create(user=user)
-        return user
+    # def save(self, commit=True):
+    #     user = super(RegisterForm, self).save(commit=False)
+    #     user.set_password(self.cleaned_data['password'])
+    #     if commit:
+    #         user.save()
+    #         if user.is_service_provider:
+    #             ServiceProviderProfile.objects.create(user=user)
+    #     return user
 
 
 

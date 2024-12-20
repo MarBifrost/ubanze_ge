@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Your Profile</h1>
+    <div class="card p-4">
+        <div class="mb-3">
+            <h5 class="card-title">City</h5>
+            <p class="card-text">{{ profile.city.city_name }}</p>
+        </div>
+
+        <div class="mb-3">
+            <h5 class="card-title">Area</h5>
+            <p class="card-text">{{ profile.area.area_name }}</p>
+        </div>
+
+        <div class="mb-3">
+            <h5 class="card-title">Street</h5>
+            <p class="card-text">{{ profile.street }}</p>
+        </div>
+
+        <div class="mb-3">
+            <h5 class="card-title">Service Category</h5>
+            <p class="card-text">{{ profile.service_category.name }}</p>
+        </div>
+
+        <div class="mb-3">
+            <h5 class="card-title">Subcategory</h5>
+            <p class="card-text">{{ profile.sub_category.name }}</p>
+        </div>
+
+        <div class="mb-3">
+            <h5 class="card-title">Service Description</h5>
+            <p class="card-text">{{ profile.service_description }}</p>
+        </div>
+
+        <div class="mb-3">
+            <h5 class="card-title">Phone Number</h5>
+            <p class="card-text">{{ profile.phone_number }}</p>
+        </div>
+
+        <div class="mb-3">
+            <h5 class="card-title">Profile Photo</h5>
+            <img src="{{ profile.photo.url }}" alt="Profile Photo" class="img-thumbnail">
+        </div>
+
+        <a href="{% url 'accounts:edit-profile' pk=profile.id %}" class="btn btn-primary">Edit Profile</a>
+    </div>
+</div>
+{% endblock %}

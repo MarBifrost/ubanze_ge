@@ -78,6 +78,7 @@ class ServiceProviderProfile(models.Model):
     city = models.ForeignKey('home.City', on_delete=models.CASCADE, related_name='providers_in_city', null=True, blank=True)
     area = models.ForeignKey('home.Area', on_delete=models.CASCADE, related_name='providers_in_area', null=True, blank=True)
     street=models.CharField(max_length=255, blank=True, null=True)
+    sub_category = models.ForeignKey('home.ServiceCategory', on_delete=models.SET_NULL, null=True, blank=True, related_name='sub_profiles')
     service_category = models.ForeignKey('home.ServiceCategory', on_delete=models.CASCADE, related_name='providers_in_category', null=True, blank=True)
     service_description = models.CharField(max_length=255, null=True, blank=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)

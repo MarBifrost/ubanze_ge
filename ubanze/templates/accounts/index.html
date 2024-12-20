@@ -1,0 +1,94 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block home %}
+	<div class="search_input" id="search_input_box">
+		<div class="container">
+			<form class="d-flex justify-content-between">
+				<input type="text" class="form-control" id="search_input" placeholder="Search Here">
+				<button type="submit" class="btn"></button>
+				<span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
+			</form>
+		</div>
+	</div>
+</header>
+<!-- End Header Area -->
+
+<!-- start banner Area -->
+<section class="banner-area">
+	<div class="container">
+		<div class="row fullscreen align-items-center justify-content-start">
+			<div class="col-lg-12">
+				<div class="active-banner-slider owl-carousel">
+					<!-- single-slide -->
+					<div class="row single-slide align-items-center d-flex">
+						<div class="col-lg-5 col-md-6">
+							<div class="main_name">
+								<h1>Ubanze</h1>
+							</div>
+							<div class="banner-content">
+								<h1>Nike New <br>Collection!</h1>
+								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+								<div class="add-bag d-flex align-items-center">
+									<a class="add-btn" href=""><span class="lnr lnr-cross"></span></a>
+									<span class="add-text text-uppercase">Add to Bag</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-7">
+							<div class="banner-img">
+							</div>
+						</div>
+					</div>
+					<!-- single-slide -->
+					<div class="row single-slide">
+						<div class="col-lg-5">
+							<div class="banner-content">
+								<h1>Nike New <br>Collection!</h1>
+								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+								<div class="add-bag d-flex align-items-center">
+									<h1 class="add-text text-uppercase">Add to Bag</h1>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-7">
+							<div class="banner-img">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- End banner Area -->
+
+<!-- start features Area -->
+<section class="features-area section_gap">
+	<div class="container">
+		<div class="row features-inner">
+			<!-- single features -->
+			<h1 style="text-align: center">უბანზე ყიდი რამეს, ან რამე სახის მომსახურების გაწევა შეგიძლია? შემოდი, დაპოსტე და ყველას გააგებინე!</h1>
+		</div>
+	</div>
+</section>
+<!-- end features Area -->
+
+<!-- Start related-product Area -->
+<section class="related-product-area section_gap_bottom">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-6 text-center">
+				<div class="section-title">
+					<h1></h1>
+					<a class="primary-btn" href="/accounts/login/">შესვლა</a>
+					<a class="primary-btn" href="/accounts/register/">რეგისტრაცია</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- End related-product Area -->
+{% endblock %}

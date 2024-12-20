@@ -1,27 +1,12 @@
 import uuid
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 
 
 # Create your models here.
-
-#model for the City
-class City(models.Model):
-    city_name = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return self.city_name
-
-
-#Model for the Area
-class Area(models.Model):
-    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='area')
-    area_name = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return f"{self.area_name}, {self.city}"
 
 
 class CustomUserManager(BaseUserManager):
@@ -40,32 +25,32 @@ class CustomUserManager(BaseUserManager):
         if username is None:
             raise ValueError("The Username field must be set")
 
-        user = self.create_user(username, email, password, **extra_fields)
-        user.is_admin = True
-        user.is_staff = True
-        user.save()
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
 
-        return user
+        user = self.create_user(username, email, password, **extra_fields)
+        user.save(using=self._db)
+        return self.create_user(username, email, password, **extra_fields)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    is_service_provider = models.BooleanField(default=False)
-    is_customer = models.BooleanField(default=False)
     username = models.CharField(max_length=255, unique=True)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    email = models.EmailField(blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True, null=True)
+    first_name = models.CharField(max_length=255, blank=True, null=True)
+    last_name = models.CharField(max_length=255, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True, unique=True)
+    phone = models.CharField(max_length=12, blank=True, null=True, unique=True, validators=[RegexValidator(regex=r'^\d+$',message="Phone number must contain only numbers.", code='invalid_phone_number')])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    customer_type = models.CharField(max_length=255, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_service_provider = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'email', 'phone']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
 
     def __str__(self):
         return self.username
@@ -82,16 +67,24 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
 
 
+class CustomerType(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    type_name = models.CharField(max_length=100, unique=True)
+    def __str__(self):
+        return self.type_name
+
 class ServiceProviderProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='service_provider_profile')
-    service_title = models.CharField(max_length=255, null=True, blank=True)
+    city = models.ForeignKey('home.City', on_delete=models.CASCADE, related_name='providers_in_city', null=True, blank=True)
+    area = models.ForeignKey('home.Area', on_delete=models.CASCADE, related_name='providers_in_area', null=True, blank=True)
+    street=models.CharField(max_length=255, blank=True, null=True)
+    service_category = models.ForeignKey('home.ServiceCategory', on_delete=models.CASCADE, related_name='providers_in_category', null=True, blank=True)
     service_description = models.CharField(max_length=255, null=True, blank=True)
-    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='providers_in_city')
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name='providers_in_area')
     phone_number = models.CharField(max_length=20, null=True, blank=True)
+    photo = models.ImageField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.user} - {self.service_title}"
+        return f"{self.user.username}"
 
 
 class CustomerProfile(models.Model):
@@ -100,3 +93,13 @@ class CustomerProfile(models.Model):
 
     def __str__(self):
         return f"{self.user}-> {self.provider}"
+
+
+class EmailQueue(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='email_queue')
+    subject = models.CharField(max_length=255)
+    message = models.TextField()
+    recipient_email=models.EmailField()
+    sent=models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+

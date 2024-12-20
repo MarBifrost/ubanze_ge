@@ -1,6 +1,10 @@
 /*--------------------------- Color variations ----------------------*/
 /*--------------------------- Fonts ----------------------*/
 @import url("https://fonts.googleapis.com/css?family=Poppins:500,700|Roboto:400,500");
+@font-face {
+  font-family: agrigolia;
+  src: url(../fonts/agrigolial.ttf);
+}
 /* Medium Layout: 1280px */
 /* Tablet Layout: 768px */
 /* Mobile Layout: 320px */
@@ -154,6 +158,17 @@ a {
   a:hover, a:focus {
     text-decoration: none;
     outline: none; }
+
+.alert.alert-danger {
+    display: block !important;
+    color: red; /* Ensures visibility */
+    font-size: 1.2rem;
+    margin: 10px 0; /* Space around the alert */
+}
+
+.main_name {
+  display: inline-block;
+}
 
 button:focus {
   outline: none;
@@ -1040,11 +1055,12 @@ h1, h2, h3, h4, h5, h6 {
     .header_area .navbar .nav .nav-item {
       margin-right: 45px; }
       .header_area .navbar .nav .nav-item .nav-link {
+        font-family: agrigolia;
         text-transform: uppercase;
         padding: 0px;
         display: inline-block;
-        font-size: 12px;
-        font-weight: 500;
+        font-size: 21px;
+        font-weight: 600;
         color: #222222; }
         @media (min-width: 991px) {
           .header_area .navbar .nav .nav-item .nav-link {
@@ -1206,8 +1222,8 @@ h1, h2, h3, h4, h5, h6 {
 /* banner area css
 ============================================================================================ */
 .banner-area {
-  background: url(../img/banner/banner-bg.jpg) center no-repeat;
-  background-size: cover;
+  background: url(../img/banner/banner-bg.JPG) center no-repeat;
+  margin-top: 100px;
   position: relative; }
   @media (max-width: 768px) {
     .banner-area .fullscreen {

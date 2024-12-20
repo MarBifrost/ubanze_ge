@@ -6,6 +6,10 @@ name = "pypi"
 [packages]
 djangorestframework-simplejwt = "*"
 django-allauth = "*"
+django-mptt = "*"
+pillow = "*"
+celery = {extras = ["redis"], version = "*"}
+redis = "*"
 
 [dev-packages]
 

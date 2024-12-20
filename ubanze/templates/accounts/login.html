@@ -4,24 +4,53 @@
     <div class="section_gap">
         <div class="login_form_inner">
             <h3>ავტორიზაციისთვის შეიყვანეთ თქვენი მონაცემები</h3>
-            <form class="row login_form" method="post" id="contactForm" novalidate="novalidate">
+            <form class="row login_form" method="post" action="" id="loginform" novalidate>
                 {% csrf_token %}
-                {{form.non_field_errors}}
+                {% if messages %}
+                    <div class="alert alert-danger">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
                 <div class="col-md-12 form-group">
-<!--                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">-->
                     {{ form.username.label_tag }}
                     {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.username.errors }}
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="col-md-12 form-group">
-<!--                    <input type="text" class="form-control" id="password" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">-->
                     {{ form.password.label_tag }}
                     {{ form.password }}
+                    {% if form.password.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.password.errors }}
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="col-md-12 form-group">
                     <button type="submit" value="submit" class="primary-btn">შესვლა</button>
                     <a href="#">დაგავიწყდათ პაროლი?</a>
                 </div>
             </form>
+            <!--================Login Box Area =================-->
+            <section class="login_box_area section_gap" style="display: flex; justify-content: center; align-items: center; margin-left: 28%; margin-top: -3%;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="login_box_img">
+                                <div class="hover">
+                                    <a class="primary-btn" href="{% url 'accounts:register' %}">რეგისტრაცია</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--================End Login Box Area =================-->
         </div>
     </div>
 {% endblock %}

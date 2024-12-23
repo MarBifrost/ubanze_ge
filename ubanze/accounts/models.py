@@ -37,7 +37,16 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=255, blank=True, null=True)
     last_name = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(blank=True, null=True, unique=True)
-    phone = models.CharField(max_length=12, blank=True, null=True, unique=True, validators=[RegexValidator(regex=r'^\d+$',message="Phone number must contain only numbers.", code='invalid_phone_number')])
+    phone = models.CharField(
+        max_length=12,
+        blank=True,
+        null=True,
+        unique=True,
+        validators=[
+            RegexValidator(
+                regex=r'^\d+$',
+                message="Phone number must contain only numbers.",
+                code='invalid_phone_number')])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     customer_type = models.CharField(max_length=255, blank=True, null=True)
@@ -53,9 +62,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
-    groups = models.ManyToManyField('auth.Group', related_name='customer_set', blank=True,
-                                    help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
-                                    verbose_name="groups")
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='customer_set',
+        blank=True,
+        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+        verbose_name="groups")
     user_permissions = models.ManyToManyField(
         'auth.Permission',
         related_name='customer_set',
@@ -65,36 +77,73 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
 
 
-
 class ServiceProviderProfile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='service_provider_profile')
-    city = models.ForeignKey('home.City', on_delete=models.CASCADE, related_name='providers_in_city', null=True, blank=True)
-    area = models.ForeignKey('home.Area', on_delete=models.CASCADE, related_name='providers_in_area', null=True, blank=True)
-    street=models.CharField(max_length=255, blank=True, null=True)
-    sub_category = models.ForeignKey('home.ServiceCategory', on_delete=models.SET_NULL, null=True, blank=True, related_name='sub_profiles')
-    service_category = models.ForeignKey('home.ServiceCategory', on_delete=models.CASCADE, related_name='providers_in_category', null=True, blank=True)
-    service_description = models.CharField(max_length=255, null=True, blank=True)
+    user = models.OneToOneField(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='service_provider_profile')
+    city = models.ForeignKey(
+        'home.City',
+        on_delete=models.CASCADE,
+        related_name='providers_in_city',
+        null=True,
+        blank=True)
+    area = models.ForeignKey(
+        'home.Area',
+        on_delete=models.CASCADE,
+        related_name='providers_in_area',
+        null=True,
+        blank=True)
+    street = models.CharField(max_length=255, blank=True, null=True)
+    sub_category = models.ForeignKey(
+        'home.ServiceCategory',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='sub_profiles')
+    service_category = models.ForeignKey(
+        'home.ServiceCategory',
+        on_delete=models.CASCADE,
+        related_name='providers_in_category',
+        null=True,
+        blank=True)
+    service_description = models.CharField(
+        max_length=255, null=True, blank=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
-    photo = models.ImageField(upload_to='img/uploads/',max_length=255, null=True, blank=True, default='img/uploads/default_pic.PNG')
+    photo = models.ImageField(
+        upload_to='img/uploads/',
+        max_length=255,
+        null=True,
+        blank=True,
+        default='img/uploads/default_pic.PNG')
 
     def __str__(self):
         return f"{self.user.username}"
 
 
 class CustomerProfile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='customer_profile')
-    provider = models.ForeignKey(ServiceProviderProfile, on_delete=models.SET_NULL, related_name='customer_profiles', blank=True, null=True)
+    user = models.OneToOneField(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='customer_profile')
+    provider = models.ForeignKey(
+        ServiceProviderProfile,
+        on_delete=models.SET_NULL,
+        related_name='customer_profiles',
+        blank=True,
+        null=True)
 
     def __str__(self):
         return f"{self.user.username} -> {self.provider.user.username if self.provider else 'No Provider'}"
 
 
-
 class EmailQueue(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='email_queue')
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='email_queue')
     subject = models.CharField(max_length=255)
     message = models.TextField()
-    recipient_email=models.EmailField()
-    sent=models.BooleanField(default=False)
+    recipient_email = models.EmailField()
+    sent = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-

@@ -8,7 +8,13 @@ from .models import ServiceProviderProfile, CustomerProfile, CustomUser
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff')
+    list_display = (
+        'username',
+        'email',
+        'first_name',
+        'last_name',
+        'is_active',
+        'is_staff')
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('username',)
 
@@ -20,14 +26,21 @@ class CustomUserAdmin(UserAdmin):
     )
 
     # Fields to display when creating a new user
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': (
-            'username', 'password1', 'password2', 'first_name', 'last_name', 'email', 'phone', 'is_active', 'is_staff',
-            'is_superuser', 'is_service_provider')}
-         ),
-    )
+    add_fieldsets = ((None,
+                      {'classes': ('wide',
+                                   ),
+                       'fields': ('username',
+                                  'password1',
+                                  'password2',
+                                  'first_name',
+                                  'last_name',
+                                  'email',
+                                  'phone',
+                                  'is_active',
+                                  'is_staff',
+                                  'is_superuser',
+                                  'is_service_provider')}),
+                     )
 
 
 @admin.register(ServiceProviderProfile)
@@ -39,6 +52,7 @@ class ServiceProviderProfileAdmin(admin.ModelAdmin):
         return obj.user.username
     get_user_name.short_description = 'Username'
 
+
 @admin.register(CustomerProfile)
 class CustomerProfileAdmin(admin.ModelAdmin):
     search_fields = ['user__username']
@@ -47,4 +61,3 @@ class CustomerProfileAdmin(admin.ModelAdmin):
     def get_user_name(self, obj):
         return obj.user.username
     get_user_name.short_description = 'Username'
-

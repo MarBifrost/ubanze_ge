@@ -27,7 +27,6 @@ from ubanze import settings
 from accounts.tasks import send_registration_email
 
 
-
 # Create your views here.
 class RegisterView(CreateView):
     def get(self, request):
@@ -50,13 +49,15 @@ class RegisterView(CreateView):
             if user.is_service_provider:
                 redirect_url = reverse('accounts:profile_edit')
             else:
-                redirect_url = reverse('home:authorized_home', kwargs={'pk': user.pk})
+                redirect_url = reverse(
+                    'home:authorized_home', kwargs={
+                        'pk': user.pk})
 
-            return render(request, 'accounts/loading.html', {'redirect_url': redirect_url})
+            return render(request, 'accounts/loading.html',
+                          {'redirect_url': redirect_url})
 
         messages.error(request, "An error occurred during registration.")
         return render(request, 'accounts/register.html', {'form': form})
-
 
 
 class ServiceProviderProfileEditView(LoginRequiredMixin, UpdateView):
@@ -65,7 +66,9 @@ class ServiceProviderProfileEditView(LoginRequiredMixin, UpdateView):
     template_name = 'accounts/provider_profile.html'
 
     def get_object(self, queryset=None):
-        return get_object_or_404(ServiceProviderProfile, user=self.request.user)
+        return get_object_or_404(
+            ServiceProviderProfile,
+            user=self.request.user)
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -74,17 +77,24 @@ class ServiceProviderProfileEditView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({
-            'profile': self.object,
-            'cities':City.objects.all(),
-            'areas':Area.objects.all(),
-            'service_categories': cache_tree_children(ServiceCategory.objects.filter(parent__isnull=True)),
-            'subcategories': ServiceCategory.objects.filter(parent__isnull=False),
-        })
+        context.update(
+            {
+                'profile': self.object,
+                'cities': City.objects.all(),
+                'areas': Area.objects.all(),
+                'service_categories': cache_tree_children(
+                    ServiceCategory.objects.filter(
+                        parent__isnull=True)),
+                'subcategories': ServiceCategory.objects.filter(
+                    parent__isnull=False),
+            })
         return context
 
     def get_success_url(self):
-        return reverse('accounts:completed_profile', kwargs={'pk': self.object.pk})
+        return reverse(
+            'accounts:completed_profile', kwargs={
+                'pk': self.object.pk})
+
 
 class ServiceProviderProfileCompletedView(LoginRequiredMixin, DetailView):
     model = ServiceProviderProfile
@@ -100,34 +110,36 @@ class ServiceProviderProfileCompletedView(LoginRequiredMixin, DetailView):
         return context
 
     def get_success_url(self):
-        return reverse('accounts:completed_profile', kwargs={'pk': self.object.pk})
-
+        return reverse(
+            'accounts:completed_profile', kwargs={
+                'pk': self.object.pk})
 
 
 class LoginView(FormView):
     form_class = AuthenticationForm
     template_name = 'accounts/login.html'
 
-
     def get_success_url(self, form):
         user = self.request.user
         if user.is_authenticated:
             if user.is_service_provider:
-                return reverse('accounts:completed_profile', kwargs={'pk': user.pk})
+                return reverse(
+                    'accounts:completed_profile', kwargs={
+                        'pk': user.pk})
             return reverse('home:authorized_home', kwargs={'pk': user.pk})
         return reverse('accounts:login')
 
     def form_valid(self, form):
-        username=form.cleaned_data.get('username')
-        password=form.cleaned_data.get('password')
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
         user = authenticate(self.request, username=username, password=password)
         if user is not None:
             backend = 'django.contrib.auth.backends.ModelBackend'
             login(self.request, user, backend=backend)
 
-            #ქეშში მომხმარებლის დამატება
-            cache.set({user.pk}, {'username':user.username,'password':user.password,
-            }, timeout=3600 * 24)
+            # ქეშში მომხმარებლის დამატება
+            cache.set({user.pk}, {'username': user.username,
+                      'password': user.password, }, timeout=3600 * 24)
             return redirect(self.get_success_url(form=form))
         else:
             messages.error(self.request, form.errors)
@@ -146,12 +158,8 @@ class LogoutView(View):
         return redirect('accounts:login')
 
 
-#subcategories API endpoint
+# subcategories API endpoint
 def get_subcategories(request, category_id):
-    subcategories = ServiceCategory.objects.filter(parent_id=category_id).values('id', 'name')
+    subcategories = ServiceCategory.objects.filter(
+        parent_id=category_id).values('id', 'name')
     return JsonResponse({'subcategories': list(subcategories)})
-
-
-
-
-

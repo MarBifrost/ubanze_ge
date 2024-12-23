@@ -9,6 +9,7 @@ class CityAdmin(admin.ModelAdmin):
     list_display = ['city_name']
     list_filter = ['city_name']
 
+
 @admin.register(Area)
 class AreaAdmin(admin.ModelAdmin):
     search_fields = ['area_name']
@@ -21,5 +22,3 @@ class ServiceCategoryAdmin(admin.ModelAdmin):
     search_fields = ['name']
     list_display = ['name']
     list_filter = ['name']
-
-

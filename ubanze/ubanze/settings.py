@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'rest_api',
 
-    #django-allauth apps
+    # django-allauth apps
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -109,7 +109,7 @@ TEMPLATES = [
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'django-db'
 
-#SMTP settings
+# SMTP settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -179,11 +179,9 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CACHES={
+CACHES = {
     'default': {
-        'BACKEND':'django.core.cache.backends.locmem.LocMemCache',
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'auth-cache',
     }
 }
-
-

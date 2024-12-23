@@ -25,5 +25,6 @@ class ServiceCategorydSerializer(serializers.ModelSerializer):
 
     def get_children(self, obj):
         if obj.get_children():
-            return ServiceCategorydSerializer(obj.get_children(), many=True).data
+            return ServiceCategorydSerializer(
+                obj.get_children(), many=True).data
         return []

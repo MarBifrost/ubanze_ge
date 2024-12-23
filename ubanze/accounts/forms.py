@@ -8,6 +8,7 @@ from django import forms
 from .models import ServiceProviderProfile
 from home.models import City, Area, ServiceCategory
 
+
 class ServiceProviderProfileForm(forms.ModelForm):
     class Meta:
         model = ServiceProviderProfile
@@ -37,11 +38,14 @@ class RegisterForm(forms.ModelForm):
         fields = ['username', 'email', 'password', 'is_service_provider']
 
 
-
-
 class LoginForm(forms.Form):
-    username = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
+    username = forms.CharField(max_length=150, widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Username'}))
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Password'}))
 
     class Meta:
         model = CustomUser

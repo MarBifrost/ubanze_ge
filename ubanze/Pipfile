@@ -9,8 +9,10 @@ django-allauth = "*"
 django-mptt = "*"
 pillow = "*"
 redis = "*"
-celery = {extras = ["redis"], version = "*"}
+celery = "*"
 django-celery-results = "*"
+django-celery-email = "*"
+djangorestframework = "*"
 
 [dev-packages]
 

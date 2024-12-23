@@ -4,7 +4,7 @@ from allauth.account.utils import user_email
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.lookups import IsNull
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy, reverse
@@ -22,12 +22,13 @@ from django.contrib import messages
 from .forms import ServiceProviderProfileForm, RegisterForm, LoginForm, CustomerProfileForm
 from .models import ServiceProviderProfile, CustomerProfile, CustomUser
 from home.models import City, Area, ServiceCategory
-
+from .tasks import send_registration_email
 from ubanze import settings
+from accounts.tasks import send_registration_email
+
 
 
 # Create your views here.
-
 class RegisterView(CreateView):
     def get(self, request):
         form = RegisterForm()
@@ -41,10 +42,15 @@ class RegisterView(CreateView):
             user.save()
             login(request, user)
 
+            # Trigger the Celery task to send a registration email
+            subject = "შენ დარეგისტრირდი უბანზე!"
+            message = f"გამარჯობა {user.username}, \n\nმადლობას გიხდი რეგისტრაციისთვის.\n\nკითხვები თუ გექნება, აქ შეგიძლია მომწერო.  "
+            send_registration_email.delay(user.email, subject, message)
+
             if user.is_service_provider:
                 redirect_url = reverse('accounts:profile_edit')
             else:
-                redirect_url = reverse ('accounts:customer', kwargs={'pk':user.pk})
+                redirect_url = reverse('home:authorized_home', kwargs={'pk': user.pk})
 
             return render(request, 'accounts/loading.html', {'redirect_url': redirect_url})
 
@@ -144,6 +150,7 @@ class LogoutView(View):
 def get_subcategories(request, category_id):
     subcategories = ServiceCategory.objects.filter(parent_id=category_id).values('id', 'name')
     return JsonResponse({'subcategories': list(subcategories)})
+
 
 
 

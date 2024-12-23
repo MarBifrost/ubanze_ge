@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 
-from django.conf.global_settings import AUTH_USER_MODEL, EMAIL_HOST_PASSWORD, EMAIL_BACKEND
+# from django.conf.global_settings import AUTH_USER_MODEL, EMAIL_HOST_PASSWORD, EMAIL_BACKEND
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,11 +48,15 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django.contrib.sites',
     'mptt',
+    'django_celery_results',
+    'rest_api',
 
     #django-allauth apps
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+
+
 ]
 
 SITE_ID = 1
@@ -62,13 +66,13 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
         'rest_framework.permissions.IsAuthenticated',
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
 }
 
 MIDDLEWARE = [
@@ -103,10 +107,17 @@ TEMPLATES = [
 ]
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-
 CELERY_RESULT_BACKEND = 'django-db'
+
+#SMTP settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ubanze6@gmail.com'
+EMAIL_HOST_PASSWORD = 'mhmjyhojlkmwokyx'
+# DEFAULT_FROM_EMAIL = '<EMAIL>'
+# DEFAULT_TO_EMAIL = 'Celery <ubanze6@gmail.com>'
 
 
 WSGI_APPLICATION = 'ubanze.wsgi.application'
@@ -174,3 +185,5 @@ CACHES={
         'LOCATION': 'auth-cache',
     }
 }
+
+

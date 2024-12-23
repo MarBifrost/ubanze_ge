@@ -1,5 +1,5 @@
 from django.views.generic import ListView
-
+from django.core.cache import cache
 from allauth.account.utils import user_email
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 from django.contrib import messages
 
@@ -49,42 +50,6 @@ class RegisterView(CreateView):
 
         messages.error(request, "An error occurred during registration.")
         return render(request, 'accounts/register.html', {'form': form})
-
-
-
-# class ServiceProviderProfileCreateView(LoginRequiredMixin, CreateView):
-#     model = ServiceProviderProfile
-#     form_class = ServiceProviderProfileForm
-#     template_name = 'accounts/provider_profile.html'
-#
-#     def form_valid(self, form):
-#         form.instance.user = self.request.user
-#         print("Cleaned Data:", form.cleaned_data)
-#         messages.success(self.request, "Profile created successfully")
-#         return super().form_valid(form)
-#
-#     def form_invalid(self, form):
-#         print("Form Errors:", form.errors)
-#         messages.error(self.request, "Error creating profile")
-#         return super().form_invalid(form)
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context.update({
-#             'cities': City.objects.all(),
-#             'areas': Area.objects.all(),
-#             'service_categories': cache_tree_children(ServiceCategory.objects.filter(parent__isnull=True)),
-#             'subcategories': ServiceCategory.objects.filter(parent__isnull=False),
-#             'provider_profile': None
-#         })
-#         return context
-
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     if ServiceProviderProfile.objects.filter(user=request.user).exists():
-    #         protile=ServiceProviderProfile.objects.get(user=request.user)
-    #         return redirect('accounts:completed_profile', pk=protile.pk)
-    #     return super().dispatch(request, *args, **kwargs)
 
 
 
@@ -141,6 +106,8 @@ class LoginView(FormView):
     def get_success_url(self, form):
         user = self.request.user
         if user.is_authenticated:
+            if user.is_service_provider:
+                return reverse('accounts:completed_profile', kwargs={'pk': user.pk})
             return reverse('home:authorized_home', kwargs={'pk': user.pk})
         return reverse('accounts:login')
 
@@ -151,6 +118,10 @@ class LoginView(FormView):
         if user is not None:
             backend = 'django.contrib.auth.backends.ModelBackend'
             login(self.request, user, backend=backend)
+
+            #ქეშში მომხმარებლის დამატება
+            cache.set({user.pk}, {'username':user.username,'password':user.password,
+            }, timeout=3600 * 24)
             return redirect(self.get_success_url(form=form))
         else:
             messages.error(self.request, form.errors)
@@ -159,7 +130,14 @@ class LoginView(FormView):
     def form_invalid(self, form):
         messages.error(self.request, form.errors)
         return self.render_to_response(self.get_context_data(form=form))
-    
+
+
+class LogoutView(View):
+    def post(self, request):
+        if request.user.is_authenticated:
+            cache.delete(f'user_cache_{request.user.pk}')
+        logout(request)
+        return redirect('accounts:login')
 
 
 #subcategories API endpoint

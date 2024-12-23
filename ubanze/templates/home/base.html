@@ -45,7 +45,9 @@
 			<nav class="navbar navbar-expand-lg navbar-light main_box">
 				<div class="container">
 					<!-- Brand and toggle get grouped for better mobile display -->
-					<a class="navbar-brand logo_h" href="{% url 'home:home' %}"><img src="{% static 'img/logo1.png' %}" alt=""></a>
+					<a class="navbar-brand logo_h" href="{% url 'home:authorized_home' pk=request.user.pk %}">
+						<img src="{% static 'img/logo1.png' %}" alt="Logo">
+					</a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 					 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="icon-bar"></span>
@@ -55,7 +57,7 @@
 					<!-- Collect the nav links, forms, and other content for toggling -->
 					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
 						<ul class="nav navbar-nav menu_nav ml-auto">
-							<li class="nav-item"><a class="nav-link" href="{% url 'home:home' %}">მთავარი</a></li>
+							<li class="nav-item"><a class="nav-link" href="{% url 'home:authorized_home' pk=request.user.pk %}">მთავარი</a></li>
 							<li class="nav-item submenu dropdown">
 								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
 								 aria-expanded="false">სერვისის კატეგორიები</a>
@@ -67,7 +69,14 @@
 									<li class="nav-item"><a class="nav-link" href="confirmation.html">ჯანმრთელობა</a></li>
 								</ul>
 							</li>
-							<li class="nav-item"><a class="nav-link" href="{% url 'accounts:login' %}">გამოსვლა</a></li>
+							<li class="nav-item"><a class="nav-link" href="{% url 'accounts:completed_profile' pk=request.user.pk%}">პროფილი</a></li>
+							<li class="nav-item">
+								<form method="post" action="{% url 'accounts:logout' %}">
+        							{% csrf_token %}
+        							<button type="submit" class="btn btn-link nav-link" style="padding: 0; border: none; background: none;">
+            							გამოსვლა
+        							</button>
+    							</form></li>
 							<li class="nav-item"><a class="nav-link" href="{% url 'home:contact' %}">კონტაქტი</a></li>
 						</ul>
 						<ul class="nav navbar-nav navbar-right">

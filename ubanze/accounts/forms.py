@@ -3,10 +3,25 @@ from audioop import maxpp
 from django import forms
 from .models import CustomUser, ServiceProviderProfile, CustomerProfile
 
+import re
+from django import forms
+from .models import ServiceProviderProfile
+from home.models import City, Area, ServiceCategory
+
 class ServiceProviderProfileForm(forms.ModelForm):
     class Meta:
         model = ServiceProviderProfile
-        fields = '__all__'
+        fields = [
+            'city',
+            'area',
+            'street',
+            'sub_category',
+            'service_category',
+            'service_description',
+            'phone_number',
+            'photo',
+        ]
+
 
 class CustomerProfileForm(forms.ModelForm):
     class Meta:
@@ -21,14 +36,6 @@ class RegisterForm(forms.ModelForm):
         model = CustomUser
         fields = ['username', 'email', 'password', 'is_service_provider']
 
-    # def save(self, commit=True):
-    #     user = super(RegisterForm, self).save(commit=False)
-    #     user.set_password(self.cleaned_data['password'])
-    #     if commit:
-    #         user.save()
-    #         if user.is_service_provider:
-    #             ServiceProviderProfile.objects.create(user=user)
-    #     return user
 
 
 

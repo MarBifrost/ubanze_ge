@@ -1,5 +1,9 @@
+from django.views.generic import ListView
+
+from allauth.account.utils import user_email
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models.lookups import IsNull
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
@@ -14,14 +18,16 @@ from django.contrib.auth.decorators import login_required
 
 from django.contrib import messages
 
-from .forms import ServiceProviderProfileForm, RegisterForm, LoginForm
+from .forms import ServiceProviderProfileForm, RegisterForm, LoginForm, CustomerProfileForm
 from .models import ServiceProviderProfile, CustomerProfile, CustomUser
 from home.models import City, Area, ServiceCategory
+
+from ubanze import settings
 
 
 # Create your views here.
 
-class RegisterView(View):
+class RegisterView(CreateView):
     def get(self, request):
         form = RegisterForm()
         return render(request, 'accounts/register.html', {'form': form})
@@ -29,46 +35,85 @@ class RegisterView(View):
     def post(self, request, *args, **kwargs):
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
             login(request, user)
 
             if user.is_service_provider:
-                redirect_url = reverse('accounts:profile_create')
+                redirect_url = reverse('accounts:profile_edit')
             else:
-                redirect_url = reverse('accounts:customer', kwargs={'pk': user.pk})
-
+                redirect_url = reverse ('accounts:customer', kwargs={'pk':user.pk})
 
             return render(request, 'accounts/loading.html', {'redirect_url': redirect_url})
 
-        else:
-            messages.error(request, "რეგისტრაციის დროს დაფიქსირდა შეცდომა")
-
+        messages.error(request, "An error occurred during registration.")
         return render(request, 'accounts/register.html', {'form': form})
 
 
-class ServiceProviderProfileCreateView(LoginRequiredMixin, CreateView):
+
+# class ServiceProviderProfileCreateView(LoginRequiredMixin, CreateView):
+#     model = ServiceProviderProfile
+#     form_class = ServiceProviderProfileForm
+#     template_name = 'accounts/provider_profile.html'
+#
+#     def form_valid(self, form):
+#         form.instance.user = self.request.user
+#         print("Cleaned Data:", form.cleaned_data)
+#         messages.success(self.request, "Profile created successfully")
+#         return super().form_valid(form)
+#
+#     def form_invalid(self, form):
+#         print("Form Errors:", form.errors)
+#         messages.error(self.request, "Error creating profile")
+#         return super().form_invalid(form)
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context.update({
+#             'cities': City.objects.all(),
+#             'areas': Area.objects.all(),
+#             'service_categories': cache_tree_children(ServiceCategory.objects.filter(parent__isnull=True)),
+#             'subcategories': ServiceCategory.objects.filter(parent__isnull=False),
+#             'provider_profile': None
+#         })
+#         return context
+
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     if ServiceProviderProfile.objects.filter(user=request.user).exists():
+    #         protile=ServiceProviderProfile.objects.get(user=request.user)
+    #         return redirect('accounts:completed_profile', pk=protile.pk)
+    #     return super().dispatch(request, *args, **kwargs)
+
+
+
+class ServiceProviderProfileEditView(LoginRequiredMixin, UpdateView):
     model = ServiceProviderProfile
     form_class = ServiceProviderProfileForm
     template_name = 'accounts/provider_profile.html'
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(ServiceProviderProfile, user=self.request.user)
+
     def form_valid(self, form):
         form.instance.user = self.request.user
+        messages.success(self.request, "Profile updated successfully")
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        categories = ServiceCategory.objects.filter(parent__isnull=True)
-        subcategories = ServiceCategory.objects.filter(parent__isnull=False)
-
-        context['cities'] = City.objects.all()
-        context['areas'] = Area.objects.all()
-        context['service_categories'] = cache_tree_children(categories)
-        context['subcategories'] = subcategories
+        context.update({
+            'profile': self.object,
+            'cities':City.objects.all(),
+            'areas':Area.objects.all(),
+            'service_categories': cache_tree_children(ServiceCategory.objects.filter(parent__isnull=True)),
+            'subcategories': ServiceCategory.objects.filter(parent__isnull=False),
+        })
         return context
 
     def get_success_url(self):
-        return reverse('accounts:completed-profile', kwargs={'pk': self.object.pk})
-
+        return reverse('accounts:completed_profile', kwargs={'pk': self.object.pk})
 
 class ServiceProviderProfileCompletedView(LoginRequiredMixin, DetailView):
     model = ServiceProviderProfile
@@ -76,36 +121,15 @@ class ServiceProviderProfileCompletedView(LoginRequiredMixin, DetailView):
     context_object_name = 'profile'
 
     def get_object(self, queryset=None):
-        return get_object_or_404(ServiceProviderProfile, user=self.request.user)
+        user = self.request.user
+        return get_object_or_404(ServiceProviderProfile, user=user)
 
-
-class ServiceProviderProfileEditView(LoginRequiredMixin, UpdateView):
-    model = ServiceProviderProfile
-    fields = [
-        'city', 'area', 'street',
-        'service_category', 'sub_category',
-        'service_description', 'phone_number', 'photo'
-    ]
-
-    template_name = 'accounts/provider_profile.html'
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(ServiceProviderProfile, user=self.request.user)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
     def get_success_url(self):
-        return reverse('accounts:completed_profile', kwargs={'pk': self.request.user.pk})
-
-
-
-class CustomerProfileDetailView(LoginRequiredMixin, DetailView):
-    model = CustomerProfile
-    template_name = './accounts/customer_profile.html'
-    context_object_name = 'customer_profile'
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(CustomUser, pk=self.kwargs['pk'], is_service_provider=False)
-
-
+        return reverse('accounts:completed_profile', kwargs={'pk': self.object.pk})
 
 
 
@@ -117,7 +141,7 @@ class LoginView(FormView):
     def get_success_url(self, form):
         user = self.request.user
         if user.is_authenticated:
-            return reverse('accounts:customer', kwargs={'pk': user.pk})
+            return reverse('home:authorized_home', kwargs={'pk': user.pk})
         return reverse('accounts:login')
 
     def form_valid(self, form):
@@ -135,29 +159,14 @@ class LoginView(FormView):
     def form_invalid(self, form):
         messages.error(self.request, form.errors)
         return self.render_to_response(self.get_context_data(form=form))
+    
 
 
-
+#subcategories API endpoint
 def get_subcategories(request, category_id):
     subcategories = ServiceCategory.objects.filter(parent_id=category_id).values('id', 'name')
     return JsonResponse({'subcategories': list(subcategories)})
 
 
-# class ServiceProviderProfileSaveView(LoginRequiredMixin, UpdateView):
-#     model = ServiceProviderProfile
-#     fields=[
-#         'city', 'area', 'street',
-#         'service_category', 'sub_category',
-#         'service_description', 'phone_number', 'photo'
-#     ]
-#
-#     template_name = 'accounts/provider_profile.html'
-#
-#     def get_object(self, queryset=None):
-#         return get_object_or_404(ServiceProviderProfile, user=self.request.user)
-#
-#     def get_success_url(self):
-#         # Stay on the same page after saving
-#         return reverse('accounts:edit-profile', kwargs={'pk': self.object.pk})
 
 

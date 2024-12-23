@@ -35,6 +35,8 @@
 <body>
 
 {% block cotact %} {% endblock %}
+{% block home_content_when_authorized %}
+{% endblock %}
 
 
 	<!-- Start Header Area -->
@@ -58,23 +60,14 @@
 								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
 								 aria-expanded="false">სერვისის კატეგორიები</a>
 								<ul class="dropdown-menu">
-									<li class="nav-item"><a class="nav-link" href="category.html">Shop Category</a></li>
-									<li class="nav-item"><a class="nav-link" href="single-product.html">Product Details</a></li>
-									<li class="nav-item"><a class="nav-link" href="checkout.html">Product Checkout</a></li>
-									<li class="nav-item"><a class="nav-link" href="cart.html">Shopping Cart</a></li>
-									<li class="nav-item"><a class="nav-link" href="confirmation.html">Confirmation</a></li>
+									<li class="nav-item"><a class="nav-link" href="category.html">განათლება</a></li>
+									<li class="nav-item"><a class="nav-link" href="single-product.html">კომპიუტერული მომსახურება</a></li>
+									<li class="nav-item"><a class="nav-link" href="checkout.html">ბავშვის მოვლა</a></li>
+									<li class="nav-item"><a class="nav-link" href="cart.html">ყიდვა-გაყიდვა</a></li>
+									<li class="nav-item"><a class="nav-link" href="confirmation.html">ჯანმრთელობა</a></li>
 								</ul>
 							</li>
-							<li class="nav-item submenu dropdown active">
-								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-								 aria-expanded="false">არეალი</a>
-								<ul class="dropdown-menu">
-									<li class="nav-item active"><a class="nav-link" href="login.html">Login</a></li>
-									<li class="nav-item"><a class="nav-link" href="tracking.html">Tracking</a></li>
-									<li class="nav-item"><a class="nav-link" href="elements.html">Elements</a></li>
-								</ul>
-							</li>
-							<li class="nav-item"><a class="nav-link" href="{% url 'accounts:login' %}">შესვლა</a></li>
+							<li class="nav-item"><a class="nav-link" href="{% url 'accounts:login' %}">გამოსვლა</a></li>
 							<li class="nav-item"><a class="nav-link" href="{% url 'home:contact' %}">კონტაქტი</a></li>
 						</ul>
 						<ul class="nav navbar-nav navbar-right">

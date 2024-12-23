@@ -8,8 +8,9 @@ djangorestframework-simplejwt = "*"
 django-allauth = "*"
 django-mptt = "*"
 pillow = "*"
-celery = {extras = ["redis"], version = "*"}
 redis = "*"
+celery = {extras = ["redis"], version = "*"}
+django-celery-results = "*"
 
 [dev-packages]
 

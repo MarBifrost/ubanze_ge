@@ -1,0 +1,31 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block home_content_when_authorized %}
+<div class="container mt-5">
+    <h1>Service Provider Profiles</h1>
+
+    <!-- Display Current User PK -->
+    <p><strong>Current User ID:</strong> {{ request.user.pk }}</p>
+
+    <div class="row">
+        {% for profile in profiles_list %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ profile.photo.url }}" class="card-img-top" alt="{{ profile.user.username }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ profile.user.username }}</h5>
+                    <p class="card-text"><strong>City:</strong> {{ profile.city.city_name }}</p>
+                    <p class="card-text"><strong>Area:</strong> {{ profile.area.area_name }}</p>
+                    <p class="card-text"><strong>Street:</strong> {{ profile.street }}</p>
+                    <p class="card-text"><strong>Service Category:</strong> {{ profile.service_category.name }}</p>
+                    <p class="card-text"><strong>Subcategory:</strong> {{ profile.sub_category.name }}</p>
+                    <p class="card-text"><strong>Phone:</strong> {{ profile.phone_number }}</p>
+                    <a href="#" class="btn btn-primary">View Profile</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,3 @@
-import uuid
-
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.core.validators import RegexValidator
 from django.db import models
@@ -34,7 +32,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255, blank=True, null=True)
     last_name = models.CharField(max_length=255, blank=True, null=True)
@@ -67,11 +65,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
 
 
-class CustomerType(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    type_name = models.CharField(max_length=100, unique=True)
-    def __str__(self):
-        return self.type_name
 
 class ServiceProviderProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='service_provider_profile')
@@ -82,7 +75,7 @@ class ServiceProviderProfile(models.Model):
     service_category = models.ForeignKey('home.ServiceCategory', on_delete=models.CASCADE, related_name='providers_in_category', null=True, blank=True)
     service_description = models.CharField(max_length=255, null=True, blank=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
-    photo = models.ImageField(null=True, blank=True)
+    photo = models.ImageField(upload_to='img/uploads/',max_length=255, null=True, blank=True, default='img/uploads/default_pic.PNG')
 
     def __str__(self):
         return f"{self.user.username}"
@@ -90,10 +83,11 @@ class ServiceProviderProfile(models.Model):
 
 class CustomerProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='customer_profile')
-    provider = models.ForeignKey(ServiceProviderProfile, on_delete=models.CASCADE, related_name='customer_profile', blank=True, null=True)
+    provider = models.ForeignKey(ServiceProviderProfile, on_delete=models.SET_NULL, related_name='customer_profiles', blank=True, null=True)
 
     def __str__(self):
-        return f"{self.user}-> {self.provider}"
+        return f"{self.user.username} -> {self.provider.user.username if self.provider else 'No Provider'}"
+
 
 
 class EmailQueue(models.Model):

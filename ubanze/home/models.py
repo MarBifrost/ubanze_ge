@@ -23,7 +23,6 @@ class Area(models.Model):
 
 
 #models for the services which is linked with customuser db
-
 class ServiceCategory(MPTTModel):
     name = models.CharField(max_length=50, unique=True)
     parent=TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')

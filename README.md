@@ -17,7 +17,7 @@ UBANZE is a Django-based project designed to connect users with service provider
     redirected to your profile editing page. Here, you can provide detailed information
     about yourself and save your updates. Once saved, you will be taken to your profile
     page, where you can view your details and use the 'Edit' button to make any future
-    changes.
+    changes. After registration User's profile creates using signals.
     Additionally, the application supports Basic Authentication for secure access to the
     API endpoints in the Django REST Framework.
     

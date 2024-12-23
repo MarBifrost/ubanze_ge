@@ -1,1 +1,0 @@
-# ubanze.ge

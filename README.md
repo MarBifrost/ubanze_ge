@@ -6,7 +6,8 @@ UBANZE is a Django-based project designed to connect users with service provider
 ## Table of Contents
 1. [Features](#features)
 2. [Installation and setup](#Installation and setup)
-
+3. [Project Structure](#Project Structure)
+4. [API Endpoints](#API Endpoints)
 
 ## Features
 ### 1. User Registration and Authentication
@@ -74,9 +75,6 @@ UBANZE is a Django-based project designed to connect users with service provider
 
         [requires]
         python_version = "3.11"
-
-# Project Structure
-UBANZE/
 
 # Project Structure
     Project structure is defined in another file named the same way

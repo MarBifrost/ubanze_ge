@@ -3,12 +3,6 @@
 
 UBANZE is a Django-based project designed to connect users with service providers in their local area, neighborhood, or even around the corner. This platform allows individuals to showcase their services, including what they can do, what they sell, and what they offer, creating a community-driven hub for local service exchange. The project focuses specifically on services within UBANs—the Georgian word for "Area"—emphasizing hyper-local connections and accessibility.
 
-## Table of Contents
-1. [Features](#features)
-2. [Installation and setup](#Installation and setup)
-3. [Project Structure](#Project Structure)
-4. [API Endpoints](#API Endpoints)
-
 ## Features
 ### 1. User Registration and Authentication
     Register users as customers or service providers
@@ -83,9 +77,6 @@ UBANZE is a Django-based project designed to connect users with service provider
 
 
 # API Endpoints
-## Credentials for APIs:
-    "username": "admin",
-    "password": "admin123"
 
 1. Providers Listing:
 

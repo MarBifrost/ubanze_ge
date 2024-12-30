@@ -22,3 +22,8 @@ class ServiceCategoryAdmin(admin.ModelAdmin):
     search_fields = ['name']
     list_display = ['name']
     list_filter = ['name']
+
+@admin.register(Services)
+class ServicesAdmin(admin.ModelAdmin):
+    search_fields = ['service_name']
+    list_display = ['service_name']

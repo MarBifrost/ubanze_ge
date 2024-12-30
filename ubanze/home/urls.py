@@ -7,5 +7,5 @@ app_name = 'home'
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('contact', ContactView.as_view(), name='contact'),
-    path('auth_home/<int:pk>', AuthorizedHome.as_view(), name='authorized_home'),
+    path('services/', AuthorizedHome.as_view(), name='services'),
 ]

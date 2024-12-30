@@ -33,7 +33,7 @@
                 </div>
                 <div class="col-md-12 form-group">
                     <button type="submit" value="submit" class="primary-btn">შესვლა</button>
-                    <a href="#">დაგავიწყდათ პაროლი?</a>
+                    <a href="{% url 'password_reset' %}">დაგავიწყდათ პაროლი?</a>
                 </div>
             </form>
             <!--================Login Box Area =================-->
@@ -43,7 +43,6 @@
                         <div class="col-lg-6">
                             <div class="login_box_img">
                                 <div class="hover">
-                                    <a class="primary-btn" href="{% url 'accounts:register' %}">რეგისტრაცია</a>
                                 </div>
                             </div>
                         </div>

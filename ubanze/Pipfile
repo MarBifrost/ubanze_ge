@@ -6,12 +6,13 @@ name = "pypi"
 [packages]
 django-allauth = "*"
 django-mptt = "*"
-pillow = "*"
 redis = "*"
 celery = "*"
 django-celery-results = "*"
-django-celery-email = "*"
 djangorestframework = "*"
+pillow = "*"
+django = "*"
+django-celery-email = "*"
 
 [dev-packages]
 

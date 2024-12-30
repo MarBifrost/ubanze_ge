@@ -46,12 +46,19 @@ class ServiceCategory(MPTTModel):
 
 class Services(models.Model):
     service_name = models.CharField(max_length=50, unique=True)
-    service_type = models.CharField(max_length=50, unique=True)
+    service_type = models.CharField(max_length=50)
     service_description = models.TextField(max_length=500, blank=True)
     user = models.ForeignKey(
         'accounts.CustomUser',
         on_delete=models.CASCADE,
         related_name='services')
+    area = models.ForeignKey(
+        Area,
+        on_delete=models.CASCADE,
+        related_name='services',
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return f"{self.service_name}, {self.service_type}, {self.service_description}, {self.user}"

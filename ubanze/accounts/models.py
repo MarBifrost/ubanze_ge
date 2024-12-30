@@ -1,7 +1,11 @@
+from tkinter import Image
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
+from PIL import Image
+from PIL.Image import Resampling
 
 
 # Create your models here.
@@ -116,6 +120,27 @@ class ServiceProviderProfile(models.Model):
         null=True,
         blank=True,
         default='img/uploads/default_pic.PNG')
+
+    def save(self, *args, **kwargs):
+        # Save the instance first to ensure self.photo.path is available
+        super().save(*args, **kwargs)
+
+        if self.photo:
+            try:
+                # Open the image
+                img = Image.open(self.photo.path)
+
+                # Set the target size
+                target_size = (300, 300)
+
+                # Resize the image while maintaining its aspect ratio
+                img.thumbnail(target_size, Resampling.LANCZOS)
+
+                # Save the resized image back to the same path
+                img.save(self.photo.path, quality=85)
+            except Exception as e:
+                print(f"Error processing image: {e}")
+
 
     def __str__(self):
         return f"{self.user.username}"

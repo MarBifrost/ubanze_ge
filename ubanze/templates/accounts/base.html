@@ -39,6 +39,8 @@
    {% block home %} {% endblock %}
    {% block provider_profile %} {% endblock %}
    {% block content %} {% endblock %}
+   {% block password_reset %} {% endblock %}
+   {% block home_content_when_authorized %} {% endblock %}
 
 
 	<!-- Start Header Area -->
@@ -46,6 +48,7 @@
 		<div class="main_menu">
 			<nav class="navbar navbar-expand-lg navbar-light main_box">
 				<div class="container">
+
 					<!-- Brand and toggle get grouped for better mobile display -->
 					<a class="navbar-brand logo_h" href="{% url 'home:home' %}"><img src="{% static 'img/logo1.png' %}" alt=""></a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -58,6 +61,7 @@
 					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
 						<ul class="nav navbar-nav menu_nav ml-auto">
 							<li class="nav-item"><a class="nav-link" href="{% url 'home:home' %}">მთავარი</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'home:services' %}">სერვისები</a></li>
 							<li class="nav-item submenu dropdown">
 								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
 								 aria-expanded="false">კატეგორიები</a>
@@ -69,14 +73,46 @@
 									<li class="nav-item"><a class="nav-link" href="confirmation.html">ჯანმრთელობა</a></li>
 								</ul>
 							</li>
-							<li class="nav-item"><a class="nav-link" href="{% url 'accounts:login' %}">შესვლა</a></li>
-							<li class="nav-item"><a class="nav-link" href="{% url 'home:contact' %}">კონტაქტი</a></li>
-						</ul>
-						<ul class="nav navbar-nav navbar-right">
-							<li class="nav-item">
-								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+                            <li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">უბნები</a>
+								<ul class="dropdown-menu">
+									<li class="nav-item"><a class="nav-link" href="category.html">საბურთალო</a></li>
+									<li class="nav-item"><a class="nav-link" href="single-product.html">ვაკე</a></li>
+									<li class="nav-item"><a class="nav-link" href="checkout.html">დიღმის მასივი</a></li>
+									<li class="nav-item"><a class="nav-link" href="cart.html">სოლოლაკი</a></li>
+									<li class="nav-item"><a class="nav-link" href="confirmation.html">ჩუღურეთი</a></li>
+								</ul>
 							</li>
+
+                            {% if request.user == profile.user %}
+                                <li class="nav-item">
+                                    <form method="post" action="{% url 'accounts:logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn">
+                                            გამოსვლა
+                                        </button>
+                                    </form>
+                                </li>
+                            {% else %}
+                            <li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">ავტორიზაცია</a>
+								<ul class="dropdown-menu">
+                                    <li class="nav-item"><a class="nav-link" href="/accounts/login/">შესვლა</a></li>
+									<li class="nav-item"><a class="nav-link" href="/accounts/register/">რეგისტრაცია</a></li>
+								</ul>
+							</li>
+                            {% endif %}
+
+
+{#	<li class="nav-item"><a class="nav-link" href="{% url 'home:contact' %}">კონტაქტი</a></li>#}
 						</ul>
+{#						<ul class="nav navbar-nav navbar-right">#}
+{#							<li class="nav-item">#}
+{#								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>#}
+{#							</li>#}
+{#						</ul>#}
 					</div>
 				</div>
 			</nav>
@@ -84,10 +120,13 @@
 	</header>
 	<!-- End Header Area -->
 
+   <!-- start banner Area -->
+
 	<!-- start footer Area -->
 	<footer class="footer-area section_gap">
 		<div class="container">
 			<div class="row">
+                <div class="row">
 				<div class="col-lg-3  col-md-6 col-sm-6">
 					<div class="single-footer-widget">
 						<h6>ჩვენს შესახებ</h6>

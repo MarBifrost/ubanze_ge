@@ -7,10 +7,14 @@
 <style>
 
         .container h1 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             font-size: 24px;
-            margin-bottom: 20px;
+            height: 400px;
         }
         form {
+            margin-top: 400px;
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -37,10 +41,11 @@
         button:hover {
             background: #45a049;
         }
+
     </style>
 <div class="container mt-5">
     <h1 class="mb-4">Complete Your Profile</h1>
-    <form method="post" action="{% url 'accounts:profile_edit' %}" style="margin-top: 150px; margin-bottom: 50px;">
+    <form method="post" enctype="multipart/form-data" action="{% url 'accounts:profile_edit' %}" style="margin-top: 150px; margin-bottom: 50px;">
         {% csrf_token %}
         <div class="mb-3">
             <label for="city" class="form-label">City</label>
@@ -95,7 +100,7 @@
 
         <div class="mb-3">
             <label for="service_description" class="form-label">Service Description</label>
-            <textarea id="service_description" name="service_description" class="form-control" placeholder="Describe your service">{{ provider_profile.service_description }}</textarea>
+            <input type="text" id="service_description" name="service_description" class="form-control" value="{{ provider_profile.service_description }}" placeholder="Describe your service">
         </div>
 
         <div class="mb-3">
@@ -103,7 +108,7 @@
             <input type="text" id="phone_number" name="phone_number" class="form-control" value="{{ provider_profile.phone_number }}" placeholder="Enter your phone number">
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" style="width: 300px; height: 300px; object-fit: cover;">
             <label for="photo" class="form-label">Profile Photo</label>
             <input type="file" id="photo" name="photo" class="form-control" value="{{ provider_profile.photo }}">
         </div>

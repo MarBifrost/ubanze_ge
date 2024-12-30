@@ -21,7 +21,7 @@ class ContactView(TemplateView):
         return context
 
 
-class AuthorizedHome(LoginRequiredMixin, ListView):
+class AuthorizedHome(ListView):
     model = ServiceProviderProfile
-    template_name = './home/authorized_home.html'
+    template_name = './accounts/services.html'
     context_object_name = 'profiles_list'

@@ -1,0 +1,32 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block home_content_when_authorized %}
+<div class="container mt-5">
+    <h1>Service Provider Profiles</h1>
+
+    <!-- Display Current User PK -->
+    <p><strong>Current User ID:</strong> {{ request.user.pk }}</p>
+
+    <div class="row" style="padding: 70px;">
+        {% for profile in profiles_list %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ profile.photo.url }}" class="card-img-top" alt="{{ profile.user.username }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ profile.user.username }}</h5>
+                    <p class="card-text"><strong>ქალაქი:</strong> {{ profile.city.city_name }}</p>
+                    <p class="card-text"><strong>უბანი:</strong> {{ profile.area.area_name }}</p>
+                    <p class="card-text"><strong>ქუჩა:</strong> {{ profile.street }}</p>
+                    <p class="card-text"><strong>სერვისის ტიპი:</strong> {{ profile.service_category.name }}</p>
+                    <p class="card-text"><strong>ქვეკატეგორია:</strong> {{ profile.sub_category.name }}</p>
+                    <p class="card-text"><strong>აღწერა:</strong> {{ profile.service_description }}</p>
+                    <p class="card-text"><strong>ტელეფონი:</strong> {{ profile.phone_number }}</p>
+                    <a href="{% url 'accounts:profile_detail' pk=profile.pk %}" class="btn btn-primary">პროფილის ნახვა</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

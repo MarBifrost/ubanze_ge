@@ -1222,7 +1222,7 @@ h1, h2, h3, h4, h5, h6 {
 /* banner area css
 ============================================================================================ */
 .banner-area {
-  background: url(../img/banner/banner-bg.JPG) center no-repeat;
+  background: url(../img/banner/big_banner.png) center no-repeat;
   margin-top: 100px;
   position: relative; }
   @media (max-width: 768px) {

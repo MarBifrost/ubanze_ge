@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import RegisterView, LoginView, ServiceProviderProfileCompletedView, \
-    get_subcategories, ServiceProviderProfileEditView, LogoutView
+    get_subcategories, ServiceProviderProfileEditView, LogoutView, ServiceProviderProfileDetailView
+
 
 app_name = 'accounts'
 
@@ -29,4 +30,11 @@ urlpatterns = [
         'subcategories/<int:category_id>',
         get_subcategories,
         name='subcategories'),
+
+    path(
+        'profile/<int:pk>/',
+        ServiceProviderProfileDetailView.as_view(),
+        name='profile_detail'),
+
+
 ]

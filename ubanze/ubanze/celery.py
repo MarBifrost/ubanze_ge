@@ -7,6 +7,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ubanze.settings')
 
 app = Celery('ubanze')
 
+
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
 # Namespace 'CELERY' means all celery-related configs must start with

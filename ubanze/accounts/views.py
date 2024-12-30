@@ -41,7 +41,7 @@ class RegisterView(CreateView):
             user.save()
             login(request, user)
 
-            # Trigger the Celery task to send a registration email
+            # სელერის ნაწილი
             subject = "შენ დარეგისტრირდი უბანზე!"
             message = f"გამარჯობა {user.username}, \n\nმადლობას გიხდი რეგისტრაციისთვის.\n\nკითხვები თუ გექნება, აქ შეგიძლია მომწერო.  "
             send_registration_email.delay(user.email, subject, message)
@@ -50,7 +50,7 @@ class RegisterView(CreateView):
                 redirect_url = reverse('accounts:profile_edit')
             else:
                 redirect_url = reverse(
-                    'home:authorized_home', kwargs={
+                    'home:services', kwargs={
                         'pk': user.pk})
 
             return render(request, 'accounts/loading.html',
@@ -126,7 +126,7 @@ class LoginView(FormView):
                 return reverse(
                     'accounts:completed_profile', kwargs={
                         'pk': user.pk})
-            return reverse('home:authorized_home', kwargs={'pk': user.pk})
+            return reverse('home:services', kwargs={'pk': user.pk})
         return reverse('accounts:login')
 
     def form_valid(self, form):
@@ -163,3 +163,12 @@ def get_subcategories(request, category_id):
     subcategories = ServiceCategory.objects.filter(
         parent_id=category_id).values('id', 'name')
     return JsonResponse({'subcategories': list(subcategories)})
+
+
+class ServiceProviderProfileDetailView(DetailView):
+    model = ServiceProviderProfile
+    template_name = 'accounts/providers_completed_profile.html'
+    context_object_name = 'profile'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(ServiceProviderProfile, pk=self.kwargs['pk'])
